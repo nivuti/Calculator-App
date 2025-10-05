@@ -7,7 +7,9 @@ This is a Scientific Calculator made using HTML, CSS, and JavaScript.
 It can do normal math (like add, subtract, multiply, divide) and also scientific math (like sin, cos, tan, square root, log, and π).
 It looks like a real calculator and is easy to use on computer or mobile.
 ---
-⚙ Tools Used
+⚙ TOOLS USED
+
+
 🧱 HTML – makes the structure (buttons and display)
 🎨 CSS – adds color and design
 🧠 JavaScript – does all the real calculations
