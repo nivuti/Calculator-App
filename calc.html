@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scientific Calculator</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #2c3e50, );
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .calculator {
+      background: #1e1e2f;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    input {
+      width: 100%;
+      height: 60px;
+      text-align: right;
+      margin-bottom: 20px;
+      font-size: 24px;
+      border: none;
+      border-radius: 8px;
+      padding: 15px;
+      background: #333;
+      color: #00ffcc;
+      box-shadow: inset 0 0 5px #000;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      height: 60px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      color: white;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    /* Group color coding */
+    button.operator {
+      background: #f39c12;
+    }
+
+    button.operator:hover {
+      background: #e67e22;
+    }
+
+    button.scientific {
+      background: #9b59b6;
+    }
+
+    button.scientific:hover {
+      background: #8e44ad;
+    }
+
+    button.control {
+      background: #e74c3c;
+    }
+
+    button.control:hover {
+      background: #c0392b;
+    }
+
+    button.number {
+      background: #34495e;
+    }
+
+    button.number:hover {
+      background: #2c3e50;
+    }
+
+    button.constant {
+      background: #16a085;
+    }
+
+    button.constant:hover {
+      background: #138d75;
+    }
+
+    .equal {
+      background: #1abc9c;
+      grid-column: span 1;
+    }
+
+    .equal:hover {
+      background: #16a085;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <input type="text" id="display" readonly>
+    <div class="buttons">
+      <button class="control" onclick="clearDisplay()">C</button>
+      <button class="control" onclick="backspace()">⌫</button>
+      <button class="operator" onclick="insert('%')">%</button>
+      <button class="operator" onclick="insert('(')">(</button>
+      <button class="operator" onclick="insert(')')">)</button>
+
+      <button class="scientific" onclick="insert('sin(')">sin</button>
+      <button class="scientific" onclick="insert('cos(')">cos</button>
+      <button class="scientific" onclick="insert('tan(')">tan</button>
+      <button class="scientific" onclick="insert('log(')">log</button>
+      <button class="scientific" onclick="insert('ln(')">ln</button>
+
+      <button class="number" onclick="insert('7')">7</button>
+      <button class="number" onclick="insert('8')">8</button>
+      <button class="number" onclick="insert('9')">9</button>
+      <button class="operator" onclick="insert('/')">÷</button>
+      <button class="scientific" onclick="insert('!')">n!</button>
+
+      <button class="number" onclick="insert('4')">4</button>
+      <button class="number" onclick="insert('5')">5</button>
+      <button class="number" onclick="insert('6')">6</button>
+      <button class="operator" onclick="insert('*')">×</button>
+      <button class="operator" onclick="insert('^')">^</button>
+
+      <button class="number" onclick="insert('1')">1</button>
+      <button class="number" onclick="insert('2')">2</button>
+      <button class="number" onclick="insert('3')">3</button>
+      <button class="operator" onclick="insert('-')">−</button>
+      <button class="constant" onclick="insert('pi')">π</button>
+
+      <button class="number" onclick="insert('0')">0</button>
+      <button class="number" onclick="insert('.')">.</button>
+      <button class="constant" onclick="insert('e')">e</button>
+      <button class="operator" onclick="insert('+')">+</button>
+      <button class="equal" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script>
+    function insert(val) {
+      document.getElementById("display").value += val;
+    }
+
+    function clearDisplay() {
+      document.getElementById("display").value = "";
+    }
+
+    function backspace() {
+      let display = document.getElementById("display");
+      display.value = display.value.slice(0, -1);
+    }
+
+    function factorial(n) {
+      if (n < 0) return NaN;
+      if (n === 0 || n === 1) return 1;
+      let result = 1;
+      for (let i = 2; i <= n; i++) result *= i;
+      return result;
+    }
+
+    function calculate() {
+      let expr = document.getElementById("display").value;
+
+      try {
+        expr = expr.replace(/pi/g, "Math.PI")
+                   .replace(/e/g, "Math.E")
+                   .replace(/sin\((.*?)\)/g, "Math.sin($1 * Math.PI / 180)")
+                   .replace(/cos\((.*?)\)/g, "Math.cos($1 * Math.PI / 180)")
+                   .replace(/tan\((.*?)\)/g, "Math.tan($1 * Math.PI / 180)")
+                   .replace(/log\((.*?)\)/g, "Math.log10($1)")
+                   .replace(/ln\((.*?)\)/g, "Math.log($1)")
+                   .replace(/(\d+)!/g, "factorial($1)")
+                   .replace(/\^/g, "**")
+                   .replace(/%/g, "/100");
+
+        let result = eval(expr);
+        document.getElementById("display").value += "=" + result;
+      } catch (e) {
+        document.getElementById("display").value = "Error";
+      }
+    }
+
+    // Keyboard support
+    document.addEventListener("keydown", function(event) {
+      const key = event.key;
+      const display = document.getElementById("display");
+
+      if (/[\d\+\-\*\/\.\%\(\)]/.test(key)) {
+        display.value += key;
+      } else if (key === "Enter") {
+        event.preventDefault();
+        calculate();
+      } else if (key === "Backspace") {
+        backspace();
+      } else if (key === "Escape") {
+        clearDisplay();
+      } else if (key === "^") {
+        display.value += "^";
+      }
+    });
+  </script>
+</body>
+</html>
